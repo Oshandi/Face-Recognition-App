@@ -18,6 +18,23 @@ while(cap.isOpened()):
 	for (x, y, w, h) in faces:
 		print(x,y,w,h)
 		
+		#region of interest
+		roi = gray_frame[y:y+h,x:x+w] #[ycord_start:ycord_end]
+		roi_color = frame[y:y+h,x:x+w]
+		img_file = "image.png"
+		
+		#printing out grayed roi for future reference
+		cv2.imwrite(img_file, roi_gray)
+		
+		#drawing a rectangle around a detected face
+		color = (255,0,0)
+		stroke = 2
+		end_cord_x = x + w;
+		end_cord_y = y + h;
+		#starting & ending coordinates
+		cv2.rect(frame,(x,y),(end_cord_x,end_cord_y),color,stroke)
+		
+		
 	if ret==True:
 		#display the captured frame
 		cv2.imshow('frame',frame)
