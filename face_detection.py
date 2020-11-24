@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os
+import pickle
 
 name = input("What is first your name?")
 print("Nice meeting you {}!".format(name))
@@ -18,6 +19,14 @@ print("Directory '%s' created" %path)
 #loading haarcascade classifier
 face_cascade = cv2.CascadeClassifier('src/cascades/data/haarcascade_frontalface_alt2.xml')
 
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+recognizer.read("trainer.yml")
+
+labels = {"persons_name:1"}
+with open("labels.pickle", 'rb') as f:
+ 	original_labels = pickle.load(f)
+ 	labels = {v:k for k,v in original_labels.items()}
+	
 cap = cv2.VideoCapture(0)
 
 while(cap.isOpened()):
@@ -35,6 +44,12 @@ while(cap.isOpened()):
  		#region of interest
  		roi_gray = gray_frame[y:y+h,x:x+w] #[ycord_start:ycord_end]
  		roi_color = frame[y:y+h,x:x+w]
+		
+		#recognize faces
+ 		id_,conf = recognizer.predict(roi_gray)
+ 		if conf>=45:
+ 			print(id_)
+ 			print(labels[id_])
  		img_file = "image.png"
 
  		#printing out grayed roi for future reference
