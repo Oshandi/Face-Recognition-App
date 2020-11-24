@@ -1,15 +1,27 @@
 import numpy as np
- import cv2
- import os
+import cv2
+import os
 
- #loading haarcascade classifier
- face_cascade = cv2.CascadeClassifier('cascades/data/haarcascade_frontalface_alt2.xml')
+name = input("What is first your name?")
+print("Nice meeting you {}!".format(name))
 
- cap = cv2.VideoCapture(0)
- total = 0
+print("Press 'K' when you are ready")
 
- while(cap.isOpened()):
- 	#Capture frame by frame
+total = 0
+
+path = os.path.join("images", name)
+if not os.path.exists(path):
+	os.makedirs(path)
+
+print("Directory '%s' created" %path) 
+ 
+#loading haarcascade classifier
+face_cascade = cv2.CascadeClassifier('src/cascades/data/haarcascade_frontalface_alt2.xml')
+
+cap = cv2.VideoCapture(0)
+
+while(cap.isOpened()):
+	#Capture frame by frame
  	ret, frame = cap.read()
  	orig = frame.copy()
  	#gray color frames required for opencv to detect faces
@@ -42,17 +54,17 @@ import numpy as np
  		cv2.imshow('frame',frame)
  		key = cv2.waitKey(1) & 0xFF
  		if key == ord("k"):
- 			save_path = "images"
- 			face_img = os.path.join(save_path,"{}.png".format(str(total).zfill(5))) 
+ 			#save_path = "images{}".format(name)
+ 			face_img = os.path.join(str(path),"{}.png".format(str(total).zfill(5))) 
  			cv2.imwrite(face_img, orig)
  			total += 1
  		elif key == ord('q'):
  			break
  	else:
  		break
- # Release everything if job is finished
- print("[INFO] {} face images stored".format(total))
- print("[INFO] cleaning up...")
+# Release everything if job is finished
+print("[INFO] {} face images stored".format(total))
+print("[INFO] cleaning up...")
 
- cap.release()
- cv2.destroyAllWindows()
+cap.release()
+cv2.destroyAllWindows()
